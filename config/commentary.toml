@@ -1,0 +1,10 @@
+title = "A Pausanias Commentary in Progress"
+description = "A born-digital commentary on Pausanias' _Periegesis_"
+bibliographies_directory = "bibliographies"
+commentaries_directory = "commentaries"
+editions_directory = "out/editions"
+
+[[table_of_contents]]    
+label = "Book 1 - Attica" 
+urn = "urn:cts:greekLit:tlg0525.tlg001:1" 
+ref = "1"
