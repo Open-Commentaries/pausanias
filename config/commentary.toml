@@ -8,3 +8,9 @@ editions_directory = "out/editions"
 label = "Book 1 - Attica" 
 urn = "urn:cts:greekLit:tlg0525.tlg001:1" 
 ref = "1"
+
+[[editions]]
+description = "Pausanias *Hellados Periegesis*"
+filename = "tlg0525.tlg001.perseus-grc2.xml"
+label = "ed. Spiro"
+urn = "urn:cts:greekLit:tlg0525.tlg001.perseus-grc2"
