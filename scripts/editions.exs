@@ -71,11 +71,11 @@ defmodule DataSchemas.Version.Body.Book do
     field: {:n, "./@n", &{:ok, &1}},
     has_many:
       {:chapters, "./div[@type='textpart' and @subtype='chapter']",
-       DataSchemas.Version.Body.Chapter}
+       DataSchemas.Version.Body.Book.Chapter}
   )
 end
 
-defmodule DataSchemas.Version.Body.Chapter do
+defmodule DataSchemas.Version.Body.Book.Chapter do
   import DataSchema, only: [data_schema: 1]
 
   @data_accessor DataSchemas.XPathAccessor
@@ -83,11 +83,11 @@ defmodule DataSchemas.Version.Body.Chapter do
     field: {:n, "./@n", &{:ok, &1}},
     has_many:
       {:sections, "./div[@type='textpart' and @subtype='section']",
-       DataSchemas.Version.Body.Section}
+       DataSchemas.Version.Body.Book.Chapter.Section}
   )
 end
 
-defmodule DataSchemas.Version.Body.Section do
+defmodule DataSchemas.Version.Body.Book.Chapter.Section do
   import DataSchema, only: [data_schema: 1]
 
   @data_accessor DataSchemas.XPathAccessor
@@ -128,7 +128,7 @@ defmodule DataSchemas.Version.SaxEventHandler do
   end
 
   def handle_event(:end_document, _data, state) do
-    {:ok, state}
+    {:ok, %{state | element_stack: state.element_stack |> Enum.reverse()}}
   end
 
   def handle_event(:start_element, {name, attributes}, state) do
@@ -144,7 +144,9 @@ defmodule DataSchemas.Version.SaxEventHandler do
       element_stack = [Map.put(curr, :end_offset, String.length(state.text)) | rest]
       {:ok, %{state | element_stack: element_stack}}
     else
-      {:ok, state}
+      element_stack = find_and_update_element(name, state)
+
+      {:ok, %{state | element_stack: element_stack}}
     end
   end
 
@@ -249,6 +251,20 @@ defmodule DataSchemas.Version.SaxEventHandler do
     Logger.warning("Unknown element #{name} with attributes #{inspect(attributes)}.")
     state
   end
+
+  defp find_and_update_element(name, state) do
+    element_stack = state.element_stack
+    index = element_stack |> Enum.find_index(fn x -> name == x.name end)
+
+    if is_nil(index) do
+      element_stack
+    else
+      el = element_stack |> Enum.at(index)
+
+      element_stack
+      |> List.replace_at(index, Map.put(el, :end_offset, String.length(state.text)))
+    end
+  end
 end
 
 defmodule EditionsIngestion do
@@ -263,6 +279,8 @@ defmodule EditionsIngestion do
 
       File.read!(f)
       |> parse_xml(f)
+      |> unpack()
+      |> Enum.filter(&(Map.get(&1, :location) == ["1", "13", "3"]))
       |> IO.inspect()
 
       # |> convert_to_jsonl(f)
@@ -353,15 +371,16 @@ defmodule EditionsIngestion do
   end
 
   def parse_xml(xml, filename) do
-    urn_fragment =
-      filename
-      |> String.replace(@inpath_prefix <> "/", "")
-      |> String.replace(Path.extname(filename), "")
+    # urn_fragment =
+    #   filename
+    #   |> String.replace(@inpath_prefix <> "/", "")
+    #   |> String.replace(Path.extname(filename), "")
 
-    urn = "urn:cts:greekLit:#{urn_fragment}"
+    # urn = "urn:cts:greekLit:#{urn_fragment}"
 
-    {:ok, version_body} = DataSchema.to_struct(xml, DataSchemas.Version)
+    {:ok, version} = DataSchema.to_struct(xml, DataSchemas.Version)
 
+    version
     # %{word_count: _word_count, lines: lines} =
     #   version_body.body.lines
     #   |> Enum.reduce(%{word_count: 0, lines: []}, fn line, acc ->
@@ -394,6 +413,46 @@ defmodule EditionsIngestion do
     #   end)
 
     # Enum.reverse(lines)
+  end
+
+  defp block_level_element?(el) do
+    el.name in ["list", "quote", "l"]
+  end
+
+  def unpack(version) do
+    version.body.books
+    |> Enum.flat_map(fn book ->
+      book.chapters
+      |> Enum.flat_map(fn chapter ->
+        chapter.sections
+        |> Enum.flat_map(fn section ->
+          location = ["#{book.n}", "#{chapter.n}", "#{section.n}"]
+
+          inline_elements = section.elements |> Enum.reject(&block_level_element?/1)
+
+          block_elements =
+            section.elements
+            |> Enum.filter(&block_level_element?/1)
+
+          section =
+            section
+            |> Map.replace(:elements, inline_elements)
+
+          [section | block_elements]
+          |> Enum.map(fn b ->
+            if is_nil(Map.get(b, :start_offset)) do
+              b |> Map.put(:location, location)
+            else
+              b
+              |> Map.merge(%{
+                location: location,
+                text: String.slice(section.text, b.start_offset..b.end_offset)
+              })
+            end
+          end)
+        end)
+      end)
+    end)
   end
 end
 
