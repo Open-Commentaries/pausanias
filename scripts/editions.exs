@@ -50,7 +50,10 @@ defmodule DataSchemas.Version do
   import DataSchema, only: [data_schema: 1]
 
   @data_accessor DataSchemas.XPathAccessor
-  data_schema(has_one: {:body, "//body", DataSchemas.Version.Body})
+  data_schema(
+    field: {:urn, "//body/div[1]/@n", &{:ok, &1}},
+    has_one: {:body, "//body", DataSchemas.Version.Body}
+  )
 end
 
 defmodule DataSchemas.Version.Body do
@@ -278,16 +281,13 @@ defmodule EditionsIngestion do
       f = Path.join(@inpath_prefix, edition_config["filename"])
 
       File.read!(f)
-      |> parse_xml(f)
+      |> parse_xml()
       |> unpack()
-      |> Enum.filter(&(Map.get(&1, :location) == ["1", "13", "3"]))
-      |> IO.inspect()
-
-      # |> convert_to_jsonl(f)
+      |> convert_to_jsonl(f)
     end
   end
 
-  def convert_to_jsonl(lines, filename) do
+  def convert_to_jsonl(blocks, filename) do
     new_f =
       filename
       |> String.replace(@inpath_prefix, @outpath_prefix)
@@ -301,27 +301,29 @@ defmodule EditionsIngestion do
       File.rm!(new_f)
     end
 
-    lines
+    blocks
     |> Enum.with_index()
-    |> Enum.each(fn {line, offset} ->
-      json = line_to_json(line, offset)
+    |> Enum.each(fn {block, index} ->
+      json = block_to_json(block, index)
 
       File.write!(new_f, Jason.encode!(json) <> "\n", [:append])
 
-      line_elements_to_json(line, offset)
+      block
+      |> Map.get(:elements, [])
+      |> inline_elements_to_json(index)
       |> Enum.each(fn e ->
         File.write!(new_f, Jason.encode!(e) <> "\n", [:append])
       end)
     end)
   end
 
-  defp line_elements_to_json(line, offset) do
-    line.elements
+  defp inline_elements_to_json(elements, index) do
+    elements
     |> Enum.map(fn element ->
       %{
         attributes: Map.new(element.attributes),
         end_offset: element.end_offset,
-        line_offset: offset,
+        block_index: index,
         start_offset: element.start_offset,
         type: "text_element",
         subtype: element.name
@@ -329,15 +331,17 @@ defmodule EditionsIngestion do
     end)
   end
 
-  defp line_to_json(line, offset) do
+  defp block_to_json(block, index) do
     %{
-      offset: offset,
-      location: line.location,
-      text: line.text,
+      end_offset: Map.get(block, :end_offset),
+      index: index,
+      location: block.location,
+      text: block.text,
       type: "text_container",
-      subtype: "line",
-      urn: line.urn,
-      words: line.words
+      start_offset: Map.get(block, :start_offset),
+      subtype: Map.get(block, :name, "div"),
+      urn: block.urn
+      # words: block.words
     }
   end
 
@@ -370,7 +374,7 @@ defmodule EditionsIngestion do
     |> Enum.reverse()
   end
 
-  def parse_xml(xml, filename) do
+  def parse_xml(xml) do
     # urn_fragment =
     #   filename
     #   |> String.replace(@inpath_prefix <> "/", "")
@@ -419,7 +423,14 @@ defmodule EditionsIngestion do
     el.name in ["list", "quote", "l"]
   end
 
+  @doc """
+  The idea is to keep these elements fairly flat here/in the JSONL,
+  and then to assemble them into a tree just before rendering. The
+  duplication of the text can be useful for debugging in the meantime.
+  """
   def unpack(version) do
+    urn = version.urn
+
     version.body.books
     |> Enum.flat_map(fn book ->
       book.chapters
@@ -440,19 +451,29 @@ defmodule EditionsIngestion do
 
           [section | block_elements]
           |> Enum.map(fn b ->
-            if is_nil(Map.get(b, :start_offset)) do
-              b |> Map.put(:location, location)
-            else
-              b
-              |> Map.merge(%{
-                location: location,
-                text: String.slice(section.text, b.start_offset..b.end_offset)
-              })
-            end
+            b
+            |> set_location(location)
+            |> set_urn("#{urn}:#{location |> Enum.join(".")}")
+            |> maybe_set_text(section)
           end)
         end)
       end)
     end)
+  end
+
+  defp maybe_set_text(%{start_offset: start_offset, end_offset: end_offset} = block, section)
+       when not is_nil(start_offset) do
+    Map.put(block, :text, String.slice(section.text, start_offset..end_offset))
+  end
+
+  defp maybe_set_text(block, _section), do: block
+
+  defp set_location(block, location) do
+    Map.put(block, :location, location)
+  end
+
+  defp set_urn(block, urn) do
+    Map.put(block, :urn, urn)
   end
 end
 
