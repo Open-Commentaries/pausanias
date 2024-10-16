@@ -15,6 +15,10 @@
 		return s.replace(/_|\*/gi, '');
 	}
 
+	function stringifyCommentCitation(comment: Comment) {
+		return comment.ctsUrn.passageComponent as string;
+	}
+
 	const heatmapTooltip = `The highlights below illustrate the "density" of
 comments on a particular lemma or line.
 Darker shades of blue indicate a greater number of glosses on the
@@ -37,6 +41,8 @@ highlighted portion of the text.`;
 	{filterListTooltip}
 	{navigationTooltip}
 	{passages}
+	showCommentaryFilters={false}
+	{stringifyCommentCitation}
 	{textContainers}
 	{tableViewTooltip}
 	iiifURL=""
