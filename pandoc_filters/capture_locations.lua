@@ -7,7 +7,7 @@ function Para(para)
         if location ~= nil then
             return {
                 pandoc.Para(pandoc.Str("---")),
-                pandoc.Span("@urn:cts:greekLit:tlg0525.tlg001.aprip:" .. location)
+                pandoc.Span("@urn:cts:greekLit:tlg0525.tlg001.apcip-nagy:" .. location)
             }
         end
     end

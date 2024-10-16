@@ -1,0 +1,96 @@
+[
+	{
+		"id": "http://zotero.org/users/1043566/items/XY98R8EI",
+		"type": "article-journal",
+		"abstract": "Abstract\n            This progress article focuses on an overview of the potential and challenges of using contemporary Geographic Information System (GIS) applications for the visual rendering and analysis of textual spatial data. The case study is an ancient traveling narrative, Pausanias’s Description of Greece (Periegesis Hellados) which was written in the second century CE. First, we describe the process of converting the volumes to spatial data using a customized version of the open-source digital semantic annotation platform Recogito. Then the focus shifts to the implementation of collected and organized spatial data to a number of GIS applications: namely Google Maps, DARIAH Geo-Browser, Gephi, Palladio and ArcGIS. Through empirical experimentation with spatial data and their implementation in different platforms, our paper charts the ways in which contemporary GIS applications may be implemented to cast new light on ancient understandings of identity, space, and place.",
+		"container-title": "Digital Scholarship in the Humanities",
+		"DOI": "10.1093/llc/fqab093",
+		"ISSN": "2055-7671, 2055-768X",
+		"issue": "3",
+		"language": "en",
+		"page": "716-724",
+		"source": "DOI.org (Crossref)",
+		"title": "Visualizing Pausanias’s <i>Description of Greece</i> with contemporary GIS",
+		"URL": "https://academic.oup.com/dsh/article/37/3/716/6439579",
+		"volume": "37",
+		"author": [
+			{
+				"family": "Foka",
+				"given": "Anna"
+			},
+			{
+				"family": "Demiroglu",
+				"given": "Osman Cenk"
+			},
+			{
+				"family": "Barker",
+				"given": "Elton"
+			},
+			{
+				"family": "Mostofian",
+				"given": "Nasrin"
+			},
+			{
+				"family": "Konstantinidou",
+				"given": "Kyriaki"
+			},
+			{
+				"family": "Kiesling",
+				"given": "Brady"
+			},
+			{
+				"family": "Talatas",
+				"given": "Linda"
+			},
+			{
+				"family": "Palm",
+				"given": "Kajsa"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2022",
+					9,
+					29
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2022",
+					8,
+					23
+				]
+			]
+		}
+	},
+	{
+		"id": "http://zotero.org/users/1043566/items/U3KXTSXA",
+		"type": "book",
+		"abstract": "\"Patrick Paul Hogan's A Student Commentary on Pausanias Book 1 introduces the first book of Pausanias' 'Description of Greece' to students of Classical Greek. Pausanias' second century CE work is the only surviving ancient description of the monuments and artwork of mainland Greece. Book 1 of the 'Description' covers Athens, its demes, and Megara--that is, Attica, the heart of the ancient Greek world. It offers not only a walking description of buildings, statues, and artwork by an ancient traveler but also insight into the mindset of an educated Greek of the Roman imperial age: his reaction to Roman domination and Classical Greek history and culture, his deeply felt religious beliefs, and his ideas regarding Hellenism and Hellenic identity. This textbook, the first on Pausanias aimed at students in almost a century, brings Pausanias back into the classroom for a new generation of readers. It is based on the Greek text edited by M.H. Rocha-Pereira and includes philological and historical commentary by Hogan. This volume elucidates difficult syntax and helps the reader with the immense number of names and places Pausanias mentions. It is suitable for students of Classical Greek at the graduate and undergraduate levels, whether Classical philologists or Classical archaeologists and art historians. Professors of archaeology will find this textbook an excellent starting point for any course on Pausanias and easily supplemented by their own knowledge of material remains and modern finds\" --",
+		"call-number": "PA4264 .A314 2014",
+		"collection-title": "Michigan classical commentaries",
+		"event-place": "Ann Arbor",
+		"ISBN": "978-0-472-07210-1",
+		"number-of-pages": "219",
+		"publisher": "University of Michigan Press",
+		"publisher-place": "Ann Arbor",
+		"source": "Library of Congress ISBN",
+		"title": "Student commentary on Pausanias Book 1",
+		"author": [
+			{
+				"family": "Hogan",
+				"given": "Patrick Paul"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2014"
+				]
+			]
+		}
+	}
+]
