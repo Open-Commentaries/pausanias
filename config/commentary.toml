@@ -12,7 +12,7 @@ file_path = "pages/about.md"
 
 [[table_of_contents]]    
 label = "Attica" 
-urn = "urn:cts:greekLit:tlg0525.tlg001:1.1-1.1" 
+urn = "urn:cts:greekLit:tlg0525.tlg001:1.1-1.13" 
 ref = "Scroll I"
 
 [[table_of_contents]]    
