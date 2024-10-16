@@ -333,12 +333,12 @@ defmodule EditionsIngestion do
 
   defp block_to_json(block, index) do
     %{
-      end_offset: Map.get(block, :end_offset),
+      end_offset: Map.get(block, :end_offset, String.length(block.text)),
       index: index,
       location: block.location,
       text: block.text,
       type: "text_container",
-      start_offset: Map.get(block, :start_offset),
+      start_offset: Map.get(block, :start_offset, 0),
       subtype: Map.get(block, :name, "div"),
       urn: block.urn
       # words: block.words
