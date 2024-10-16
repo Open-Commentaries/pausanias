@@ -6,9 +6,8 @@ function Para(para)
 
         if location ~= nil then
             return {
-                pandoc.Para("---"),
-                pandoc.Span("@urn:cts:greekLit:tlg0525.tlg001.aprip:" .. location),
-                para
+                pandoc.Para(pandoc.Str("---")),
+                pandoc.Span("@urn:cts:greekLit:tlg0525.tlg001.aprip:" .. location)
             }
         end
     end
@@ -22,7 +21,10 @@ function Div(div)
     end
 
     if div.attributes["custom-style"] == "chs_h3" then
-        return pandoc.Header(3, pandoc.utils.stringify(div.content), div.attr, div.classes)
+        -- we need to unwrap chs_h3 headings because they
+        -- contain the references that are turned into URNs
+        -- in the next filter
+        return div.content
     end
 
     if div.attributes["custom-style"] == "chs_h4" then
