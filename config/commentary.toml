@@ -4,6 +4,7 @@ bibliographies_directory = "bibliographies"
 commentaries_directory = "commentaries"
 editions_directory = "out/editions"
 home_page = "pages/home.md"
+named_entities = "out/tlg0525.tlg001.perseus-grc2.entities.csv"
 
 [[static_pages]]
 title = "About"

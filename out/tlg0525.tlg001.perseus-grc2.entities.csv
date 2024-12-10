@@ -1,7 +1,7 @@
 text_container_index,entity_urn,entity_text,entity_type,confidence,entity_link,wikidata_id
 0,urn:cts:greekLit:tlg0525.tlg001.perseus-grc2:1.1.1@Ἑλληνικῆς[1],Ἑλληνικῆς,MISC,0.9850707054138184,,
-0,urn:cts:greekLit:tlg0525.tlg001.perseus-grc2:1.1.1@Κυκλάδας[1],Κυκλάδας,MISC,0.8195088505744934,http://topostext.org/place/372248RKyk
-0,urn:cts:greekLit:tlg0525.tlg001.perseus-grc2:1.1.1@Αἰγαῖον[1],Αἰγαῖον,LOC,0.688615083694458,https://pleiades.stoa.org/places/658368
+0,urn:cts:greekLit:tlg0525.tlg001.perseus-grc2:1.1.1@Κυκλάδας[1],Κυκλάδας,MISC,0.8195088505744934,http://topostext.org/place/372248RKyk,Q171132
+0,urn:cts:greekLit:tlg0525.tlg001.perseus-grc2:1.1.1@Αἰγαῖον[1],Αἰγαῖον,LOC,0.688615083694458,https://pleiades.stoa.org/places/658368,Q60791230
 0,urn:cts:greekLit:tlg0525.tlg001.perseus-grc2:1.1.1@Σούνιον[1],Σούνιον,LOC,0.9704216122627258,http://topostext.org/place/376240LSou
 0,urn:cts:greekLit:tlg0525.tlg001.perseus-grc2:1.1.1@Ἀττικῆς[1],Ἀττικῆς,MISC,0.8772996068000793,,
 0,urn:cts:greekLit:tlg0525.tlg001.perseus-grc2:1.1.1@Ἀθηνᾶς[1],Ἀθηνᾶς,PER,0.9027066230773926,,

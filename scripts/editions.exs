@@ -1,4 +1,5 @@
 Mix.install([
+  {:csv, "~> 3.2"},
   {:data_schema, "~> 0.5.0"},
   {:jason, "~> 1.3"},
   {:saxy, "~> 1.5"},
@@ -280,14 +281,23 @@ defmodule EditionsIngestion do
     for edition_config <- editions_config["editions"] do
       f = Path.join(@inpath_prefix, edition_config["filename"])
 
+      named_entities =
+        if editions_config["named_entities"] do
+          File.stream!(editions_config["named_entities"])
+          |> CSV.decode!(headers: true)
+          |> Enum.filter(fn row -> row["entity_link"] != "" end)
+        else
+          []
+        end
+
       File.read!(f)
       |> parse_xml()
       |> unpack()
-      |> convert_to_jsonl(f)
+      |> convert_to_jsonl(f, named_entities)
     end
   end
 
-  def convert_to_jsonl(blocks, filename) do
+  def convert_to_jsonl(blocks, filename, named_entities) do
     new_f =
       filename
       |> String.replace(@inpath_prefix, @outpath_prefix)
@@ -313,6 +323,30 @@ defmodule EditionsIngestion do
       |> inline_elements_to_json(index)
       |> Enum.each(fn e ->
         File.write!(new_f, Jason.encode!(e) <> "\n", [:append])
+      end)
+
+      #   %{
+      #   "confidence" => "0.9704216122627258",
+      #   "entity_link" => "http://topostext.org/place/376240LSou",
+      #   "entity_text" => "Σούνιον",
+      #   "entity_type" => "LOC",
+      #   "entity_urn" => "urn:cts:greekLit:tlg0525.tlg001.perseus-grc2:1.1.1@Σούνιον[1]",
+      #   "text_container_index" => "0"
+      # }
+      named_entities
+      |> Enum.filter(fn entity ->
+        String.to_integer(entity["text_container_index"]) == index
+      end)
+      |> IO.inspect()
+      |> Enum.each(fn entity ->
+        element = %{
+          attributes: entity,
+          block_index: index,
+          type: "text_element",
+          subtype: "named_entity"
+        }
+
+        File.write!(new_f, Jason.encode!(element) <> "\n", [:append])
       end)
     end)
   end
