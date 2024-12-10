@@ -5,9 +5,13 @@ function Para(para)
         _, _, location = para.content[1].text:find(locationPattern)
 
         if location ~= nil then
+            local citation = "@urn:cts:greekLit:tlg0525.tlg001:" .. 
+                location .. "\n:citable_urn: urn:cts:greekLit:tlg0525.tlg001.apcip-nagy:" .. 
+                location
+
             return {
-                pandoc.Para(pandoc.Str("---")),
-                pandoc.Span("@urn:cts:greekLit:tlg0525.tlg001.apcip-nagy:" .. location)
+                pandoc.Para(pandoc.Str("---")), 
+                pandoc.Span(pandoc.Str(citation))
             }
         end
     end

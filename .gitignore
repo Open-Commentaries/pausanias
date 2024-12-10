@@ -24,3 +24,5 @@ vite.config.ts.timestamp-*
 .venv
 
 result.md
+
+topos_text_resources

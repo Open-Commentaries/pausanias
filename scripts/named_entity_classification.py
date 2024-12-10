@@ -20,6 +20,7 @@ class Tagger:
             "entity_type",
             "confidence",
             "entity_link",
+            "wikidata_id",
         ]
 
         with open(
@@ -56,6 +57,7 @@ class Tagger:
                                     entity_type=entity_type,
                                     confidence=confidence,
                                     entity_link="",
+                                    wikidata_id="",
                                 )
                             )
 

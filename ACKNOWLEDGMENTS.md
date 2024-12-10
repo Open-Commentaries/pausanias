@@ -1,0 +1,1 @@
+Data for tagged persons and places were generously provided by The Swedish Research Council grant _Time and People in Pausanias’s_ Description of Greece (Vetenskapsrådet project no: 2021-02799) and the Digital Periegesis team (www.periegesis.org).
