@@ -28,3 +28,10 @@ Web producer: Noel Spencer
 Consultant for images: Jill Curry Robbins
 
 </div>
+
+Named Entity Annotators:
+
+- Joseph Foo
+- Kiesse Nanor
+- Mitch Shiffer
+- Georgia Thoms
