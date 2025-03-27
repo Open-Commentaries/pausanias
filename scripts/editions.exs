@@ -400,7 +400,7 @@ defmodule EditionsIngestion do
         xml_id: "word_index_#{index + word_count}",
         offset: offset,
         text: word,
-        urn_index: Enum.count(ws, fn w -> w.text == word end) + 1
+        urn_index: left |> String.split(word) |> length() + 1
       }
 
       %{offset: offset + String.length(word), current_text: right, words: [w | ws]}
@@ -409,52 +409,9 @@ defmodule EditionsIngestion do
   end
 
   def parse_xml(xml) do
-    # urn_fragment =
-    #   filename
-    #   |> String.replace(@inpath_prefix <> "/", "")
-    #   |> String.replace(Path.extname(filename), "")
-
-    # urn = "urn:cts:greekLit:#{urn_fragment}"
-
     {:ok, version} = DataSchema.to_struct(xml, DataSchemas.Version)
 
     version
-    # %{word_count: _word_count, lines: lines} =
-    #   version_body.body.lines
-    #   |> Enum.reduce(%{word_count: 0, lines: []}, fn line, acc ->
-    #     text = line.text |> String.trim()
-    #     word_count = acc.word_count
-
-    #     words = enumerate_words(text, word_count)
-
-    #     speaker =
-    #       version_body.body.speakers
-    #       |> Enum.find(fn speaker -> Enum.member?(speaker.lines, line.n) end)
-
-    #     new_line = %{
-    #       elements: [
-    #         %{
-    #           attributes: %{name: speaker.name},
-    #           start_offset: 0,
-    #           end_offset: String.length(text),
-    #           name: "speaker"
-    #         }
-    #         | line.elements
-    #       ],
-    #       location: [line.n],
-    #       text: text,
-    #       urn: "#{urn}:#{line.n}",
-    #       words: words
-    #     }
-
-    #     %{word_count: word_count + length(words), lines: [new_line | acc.lines]}
-    #   end)
-
-    # Enum.reverse(lines)
-  end
-
-  defp block_level_element?(el) do
-    el.name in ["list", "quote", "l"]
   end
 
   @doc """
@@ -493,6 +450,10 @@ defmodule EditionsIngestion do
         end)
       end)
     end)
+  end
+
+  defp block_level_element?(el) do
+    el.name in ["list", "quote", "l"]
   end
 
   defp maybe_set_text(%{start_offset: start_offset, end_offset: end_offset} = block, section)
